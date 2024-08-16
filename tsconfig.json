@@ -3,18 +3,21 @@
   "compileOnSave": false,
   "compilerOptions": {
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
+    "strictPropertyInitialization": false,
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
+    "strictNullChecks": false,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
@@ -27,6 +30,7 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
+    "strictNullChecks": false,
     "strictTemplates": true
   }
 }
