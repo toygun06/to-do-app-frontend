@@ -133,7 +133,7 @@ gender: any;
         .post('Auth/UserRegister', this.registerForm.value)
         .subscribe((res) => {
           this.swal.callToast('Kayıt işlemi başarılı!');
-          this.router.navigateByUrl('login');
+          this.router.navigateByUrl('');
         });
     }
   }

@@ -63,17 +63,24 @@
                   class="fas fa-sort-amount-down-alt ms-2"></i></a>
             </div>
 
-            <ul class="list-group list-group-horizontal rounded-0 bg-transparent">
-              <li
+            <ul class="list-group list-group-horizontal rounded-0 bg-transparent align-items-center">
+              <!-- <li
                 class="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
                 <div class="form-check">
                   <input class="form-check-input me-0" type="checkbox" value="" id="flexCheckChecked1"
                     aria-label="..." checked />
                 </div>
+              </li> -->
+              <li class="list-group-item border-0 bg-transparent">
+                  <select [ngStyle]="{'background-color': selectBackgroundColor}" (change)="onStatusChange($event)">
+                    <option value="1" style="background-color: green;">Yeni</option>
+                    <option value="2" style="background-color: yellow;">Yapılıyor</option>
+                    <option value="3" style="background-color: red;">Tamamlandı</option>
+                  </select>
               </li>
               <li
                 class="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
-                <p class="lead fw-normal mb-0">Buy groceries for next week</p>
+                <p class="lead fw-normal mb-0" [ngClass]="{'text-strikethrough': isCompleted}">Buy groceries for next week</p>
               </li>
               <li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
                 <div class="d-flex flex-row justify-content-end mb-1">

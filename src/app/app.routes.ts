@@ -12,7 +12,7 @@ export const routes: Routes = [
     component: RegisterComponent
   },
   {
-    path: 'login',
+    path: '',
     component: LoginComponent
   },
   {
