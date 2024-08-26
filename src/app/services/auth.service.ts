@@ -5,7 +5,7 @@ import { HttpService } from './http.service';
 import { LocalStorageService } from './local-storage.service';
 import { Observable, map, of, take } from 'rxjs';
 import { SwalService } from './swal.service';
-import { IsUserVerifiedModel } from '../models/isUserVerifiedModel';
+import { UserModel } from '../models/userModel';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class AuthService {
     private http: HttpService,
     private localStorage: LocalStorageService,
     private swal: SwalService
-  ) {}
+  ) { }
 
   isAuthenticated(): Observable<boolean> {
     const token: string | null = this.localStorage.getItem('token');
@@ -33,7 +33,7 @@ export class AuthService {
       this.router.navigateByUrl('/');
       return new Observable((observer) => observer.next(false));
     }
-      return new Observable((observer) => observer.next(true));
+    return new Observable((observer) => observer.next(true));
   }
 
   private isTokenExpired(token: string): boolean {
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   getUserRole(): string | null {
-    const token:string = this.localStorage.getItem('token');
+    const token: string = this.localStorage.getItem('token');
     if (token) {
       const decodedToken: any = this.jwtHelper.decodeToken(token);
       console.log(decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'])
@@ -63,34 +63,29 @@ export class AuthService {
   //   return this.getUserRole() === 'Doctor';
   // }
 
-  // isUserVerified(): Observable<boolean>  {
-  //   return this.http.get<IsUserVerifiedModel>('Auth/IsEmailVerified')
-  //     .pipe(
-  //       map(res => {
-  //         if (res.isEmailVerified) {
-  //           this.localStorage.setItem('userId', res.userId.toString());
-  //           return true;
-  //         } else {
-  //           this.router.navigateByUrl('/verificationcode');
-  //           return false;
-  //         }
-  //       })
-  //     );
-  // }
+  getUserId(): string | null {
+    const token: string = this.localStorage.getItem('token');
+    if (token) {
+      const decodedToken: any = this.jwtHelper.decodeToken(token);
+      console.log(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
+      return decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+    }
+    return null;
+  }
 
-  logout() {
-    this.swal.callSwal(
-      'Çıkış Yapılacaktır',
-      'Sistemden çıkmak istediğinize eminmisiniz?',
-      () => {
-        this.localStorage.clear();
-        this.router.navigateByUrl('');
-        this.swal.callToast('Çıkış işlemi başarılı.', 'success');
-      },
-      'Evet'
-    );
-  }
+logout() {
+  this.swal.callSwal(
+    'Çıkış Yapılacaktır',
+    'Sistemden çıkmak istediğinize eminmisiniz?',
+    () => {
+      this.localStorage.clear();
+      this.router.navigateByUrl('');
+      this.swal.callToast('Çıkış işlemi başarılı.', 'success');
+    },
+    'Evet'
+  );
+}
   get isAuthenticatedByUserId(): number {
-    return parseInt(this.localStorage.getItem('userId') || '0');
-  }
+  return parseInt(this.localStorage.getItem('id') || '0');
+}
 }
