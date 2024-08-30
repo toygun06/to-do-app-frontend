@@ -67,7 +67,6 @@ export class AuthService {
     const token: string = this.localStorage.getItem('token');
     if (token) {
       const decodedToken: any = this.jwtHelper.decodeToken(token);
-      console.log(decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'])
       return decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
     }
     return null;

@@ -1,22 +1,26 @@
 import { AuthService } from './../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { Paginate } from '../../models/paginateModel';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { TaskModel } from '../../models/taskModel';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SwalService } from '../../services/swal.service';
 
 @Component({
   selector: 'app-user-layout',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule
   ],
   templateUrl: './user-layout.component.html',
   styleUrl: './user-layout.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class UserLayoutComponent implements OnInit {
+  taskForm: FormGroup;
   isCompleted = false;
   selectBackgroundColor = 'white';
   getUserId: any;
@@ -24,13 +28,22 @@ export class UserLayoutComponent implements OnInit {
   constructor(
     private http: HttpService,
     private localStorage: LocalStorageService,
-    private AuthService: AuthService
+    private AuthService: AuthService,
+    private fb: FormBuilder,
+    private swal: SwalService,
+    private cdRef: ChangeDetectorRef,
   ) { }
 
   tasks:Paginate<TaskModel>;
 
   ngOnInit(): void {
     this.getTasks();
+    this.taskForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      userId: [null],
+
+    });
   }
 
   onStatusChange(event: Event): void {
@@ -55,6 +68,30 @@ export class UserLayoutComponent implements OnInit {
 
   }
 
+
+
+  addTask() {
+    const userId = this.AuthService.getUserId();
+    this.taskForm.patchValue({ userId: userId });
+    if (this.taskForm.valid) {
+      // API POST isteği
+      this.http.post(`Task/Add`, this.taskForm.value).subscribe(response => {
+        this.swal.callToast("Görev başarıyla eklendi", "success");
+        this.getTasks();
+        this.taskForm.reset();
+      }, error => {
+        console.error('Hata:', error);
+      });
+    }
+  }
+
+  get title() {
+    return this.taskForm.get('title');
+  }
+  get description() {
+    return this.taskForm.get('description');
+  }
+
   putUpdateTaskStatus(){
     this.http
       .put<any>('Task/UpdateTaskStatus')
@@ -63,6 +100,24 @@ export class UserLayoutComponent implements OnInit {
       });
   }
 
+  updateTask(task: TaskModel) {
+
+    this.http.put(`Task/Update`, task).subscribe(response => {
+      const index = this.tasks.items.findIndex(t => t.id === task.id);
+      this.tasks.items[index] = task;
+    });
+  }
+
+  deleteTask(taskId: number) {
+    this.swal.callSwal("Görev Silme", "Görevi silmek istediğinize emin misiniz?", ()=> {
+      this.http.delete(`Task/Delete?id=${taskId}`).subscribe(response => {
+        this.getTasks();
+        this.swal.callToast("Görev başarıyla silindi", "success");
+      });
+    }, "Evet")
+    };
+
+
   getTasks(){
     const userId = this.AuthService.getUserId();
     this.http
@@ -70,7 +125,12 @@ export class UserLayoutComponent implements OnInit {
       .subscribe(response => {
         this.tasks = response;
         this.totalPages = response.pagination.totalPages;
-      });
+      },
+      error => {
+        console.error('Hata:', error);
+        this.swal.callToast("Görevler getirilirken hata oluştu", "error");
+      }
+    );
   }
 
 
@@ -138,7 +198,7 @@ getPageNumbers(): number[] {
   return pageNumbers;
 }
 
-// Kaç adet listeleneceğini beliritir
+// Kaç adet listeleneceğini belirtir
 goToChangeSelectedCount() {
   this.getTasks();
 }
