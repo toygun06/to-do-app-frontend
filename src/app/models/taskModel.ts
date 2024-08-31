@@ -4,4 +4,6 @@ export interface TaskModel{
     description:string;
     status:number;
     userId:string;
+    createdDate:Date;
+    updatedDate:Date;
 }

@@ -1,11 +1,11 @@
+import { TaskModel } from './../../models/taskModel';
 import { AuthService } from './../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { HttpService } from '../../services/http.service';
 import { Paginate } from '../../models/paginateModel';
 import { LocalStorageService } from '../../services/local-storage.service';
-import { TaskModel } from '../../models/taskModel';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SwalService } from '../../services/swal.service';
 
 @Component({
@@ -13,7 +13,8 @@ import { SwalService } from '../../services/swal.service';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   templateUrl: './user-layout.component.html',
   styleUrl: './user-layout.component.css',
@@ -24,6 +25,7 @@ export class UserLayoutComponent implements OnInit {
   isCompleted = false;
   selectBackgroundColor = 'white';
   getUserId: any;
+
 
   constructor(
     private http: HttpService,
@@ -46,35 +48,11 @@ export class UserLayoutComponent implements OnInit {
     });
   }
 
-  onStatusChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedValue = selectElement.value;
-    this.isCompleted = selectElement.value === '3';
-
-
-    switch (selectedValue) {
-      case '1':
-        this.selectBackgroundColor = 'green';
-        break;
-      case '2':
-        this.selectBackgroundColor = 'yellow';
-        break;
-      case '3':
-        this.selectBackgroundColor = 'red';
-        break;
-      default:
-        this.selectBackgroundColor = 'orange';
-    }
-
-  }
-
-
 
   addTask() {
     const userId = this.AuthService.getUserId();
     this.taskForm.patchValue({ userId: userId });
     if (this.taskForm.valid) {
-      // API POST isteği
       this.http.post(`Task/Add`, this.taskForm.value).subscribe(response => {
         this.swal.callToast("Görev başarıyla eklendi", "success");
         this.getTasks();
@@ -85,24 +63,31 @@ export class UserLayoutComponent implements OnInit {
     }
   }
 
-  get title() {
-    return this.taskForm.get('title');
-  }
-  get description() {
-    return this.taskForm.get('description');
-  }
+  // get title() {
+  //   return this.taskForm.get('title');
+  // }
+  // get description() {
+  //   return this.taskForm.get('description');
+  // }
 
-  putUpdateTaskStatus(){
+  putUpdateTaskStatus(taskId: number, status: number) {
+    const model = {
+      id: taskId,
+      status: status
+    };
+
     this.http
-      .put<any>('Task/UpdateTaskStatus')
+      .put<any>(`Task/UpdateTaskStatus`, model)
       .subscribe(response => {
-        // handle the response
+        this.swal.callToast("Görev başarıyla güncellendi", "success");
       });
+      this.getTasks();
   }
 
   updateTask(task: TaskModel) {
 
-    this.http.put(`Task/Update`, task).subscribe(response => {
+    this.http.put(`Task/Update`, task)
+    .subscribe(response => {
       const index = this.tasks.items.findIndex(t => t.id === task.id);
       this.tasks.items[index] = task;
     });
@@ -110,7 +95,8 @@ export class UserLayoutComponent implements OnInit {
 
   deleteTask(taskId: number) {
     this.swal.callSwal("Görev Silme", "Görevi silmek istediğinize emin misiniz?", ()=> {
-      this.http.delete(`Task/Delete?id=${taskId}`).subscribe(response => {
+      this.http.delete(`Task/Delete?id=${taskId}`)
+      .subscribe(response => {
         this.getTasks();
         this.swal.callToast("Görev başarıyla silindi", "success");
       });
