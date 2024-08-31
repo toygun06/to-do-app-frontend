@@ -25,6 +25,7 @@ export class UserLayoutComponent implements OnInit {
   isCompleted = false;
   selectBackgroundColor = 'white';
   getUserId: any;
+  tasks:Paginate<TaskModel>;
 
 
   constructor(
@@ -36,7 +37,9 @@ export class UserLayoutComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
   ) { }
 
-  tasks:Paginate<TaskModel>;
+  filteredTasks: TaskModel[] = [];
+  selectedFilter = '0';
+  selectedSort = '0';
 
   ngOnInit(): void {
     this.getTasks();
@@ -46,7 +49,25 @@ export class UserLayoutComponent implements OnInit {
       userId: [null],
 
     });
+    this.applyFilter();
   }
+
+  applyFilter() {
+    if (!this.tasks || !this.tasks.items) {
+      return;
+    }
+
+    this.filteredTasks = this.tasks.items.filter(task => {
+      if (this.selectedFilter === '0') return true; // Tümü
+      if (this.selectedFilter === '1') return task.status === 1; // Yeni
+      if (this.selectedFilter === '2') return task.status === 2; // Yapılıyor
+      if (this.selectedFilter === '3') return task.status === 3; // Tamamlanmış
+      return true;
+    });
+
+    this.cdRef.detectChanges(); // Değişiklikleri tetikle
+  }
+
 
 
   addTask() {
@@ -62,13 +83,6 @@ export class UserLayoutComponent implements OnInit {
       });
     }
   }
-
-  // get title() {
-  //   return this.taskForm.get('title');
-  // }
-  // get description() {
-  //   return this.taskForm.get('description');
-  // }
 
   putUpdateTaskStatus(taskId: number, status: number) {
     const model = {
@@ -111,6 +125,7 @@ export class UserLayoutComponent implements OnInit {
       .subscribe(response => {
         this.tasks = response;
         this.totalPages = response.pagination.totalPages;
+        this.applyFilter();
       },
       error => {
         console.error('Hata:', error);

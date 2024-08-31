@@ -2,3 +2,54 @@
   text-decoration: line-through;
 }
 
+.page-link.active {
+  background-color: #007bff; /* Aktif butonun arka plan rengi */
+  color: white; /* Yazı rengi */
+  border-color: #007bff; /* Çerçeve rengi */
+  /* Yanıp kalma animasyonu */
+  animation: blink 0.5s step-end infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* Seçili durumda dropdown'ın rengini belirleyen sınıflar */
+.option-new {
+  background-color: white;
+  color: black;
+}
+
+.option-in-progress {
+  background-color: rgb(255, 255, 169);
+  color: black;
+}
+
+.option-completed {
+  background-color: yellowgreen;
+  color: white;
+}
+
+/* Select kutusunun kendisi için renk değiştirme */
+select.option-new {
+  background-color: white;
+  color: black;
+}
+
+select.option-in-progress {
+  background-color: rgb(255, 255, 169);
+  color: black;
+}
+
+select.option-completed {
+  background-color: yellowgreen;
+  color: white;
+}
+
+
+
