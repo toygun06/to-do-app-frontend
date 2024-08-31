@@ -2,3 +2,21 @@
   text-decoration: line-through;
 }
 
+.page-link.active {
+  background-color: #007bff; /* Aktif butonun arka plan rengi */
+  color: white; /* Yazı rengi */
+  border-color: #007bff; /* Çerçeve rengi */
+  /* Yanıp kalma animasyonu */
+  animation: blink 0.5s step-end infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+
+

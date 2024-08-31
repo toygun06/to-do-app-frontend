@@ -71,25 +71,50 @@
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
                 <li class="page-item">
-                  <a class="page-link" (click)="goToFirstPage()" [attr.disabled]="pageIndex === 1 ? true : null">İlk</a>
+                  <a
+                    class="page-link"
+                    (click)="goToFirstPage()"
+                    [ngClass]="{ active: pageIndex === 1 }"
+                    [attr.disabled]="pageIndex === 1 ? true : null"
+                    >İlk</a
+                  >
                 </li>
                 <li class="page-item">
-                  <a class="page-link" (click)="prevPage()" [attr.disabled]="pageIndex === 1 ? true : null">Önceki</a>
+                  <a
+                    class="page-link"
+                    (click)="prevPage()"
+                    [attr.disabled]="pageIndex === 1 ? true : null"
+                    >Önceki</a
+                  >
                 </li>
                 <li class="page-item" *ngFor="let pageNumber of getPageNumbers()">
-                  <a class="page-link" (click)="goToPage(pageNumber)"
-                    [ngClass]="{ active: pageNumber === pageIndex }">{{ pageNumber }}</a>
+                  <a
+                    class="page-link"
+                    (click)="goToPage(pageNumber)"
+                    [ngClass]="{ active: pageNumber === pageIndex }"
+                    >{{ pageNumber }}</a
+                  >
                 </li>
                 <li class="page-item">
-                  <a class="page-link" (click)="nextPage()"
-                    [attr.disabled]="pageIndex === totalPages ? true : null">Sonraki</a>
+                  <a
+                    class="page-link"
+                    (click)="nextPage()"
+                    [attr.disabled]="pageIndex === totalPages ? true : null"
+                    >Sonraki</a
+                  >
                 </li>
                 <li class="page-item">
-                  <a class="page-link" (click)="goToLastPage()"
-                    [attr.disabled]="pageIndex === totalPages ? true : null">Son</a>
+                  <a
+                    class="page-link"
+                    (click)="goToLastPage()"
+                    [ngClass]="{ active: pageIndex === totalPages }"
+                    [attr.disabled]="pageIndex === totalPages ? true : null"
+                    >Son</a
+                  >
                 </li>
               </ul>
             </nav>
+
           </div>
         </div>
       </div>
