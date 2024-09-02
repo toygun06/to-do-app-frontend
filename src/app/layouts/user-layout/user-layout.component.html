@@ -60,7 +60,7 @@
                   </select>
                     <span [ngClass]="{'text-strikethrough': task.status === 3}" class="ms-2">{{ task.title }}</span>
                 </div>
-                <a class="badge bg-primary rounded-pill">{{task.createdDate}}</a>
+                <a class="badge bg-primary rounded-pill" >{{task.createdDate | date:'dd/MM/yyyy HH:mm'}}</a>
 
                 <div class="d-flex">
                   <a class="text-info me-2" (click)="updateTask(task)" title="Görevi Düzenle"><i
