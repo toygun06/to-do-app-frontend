@@ -44,10 +44,10 @@ export class HttpService {
     );
   }
 
-   // Generic GET method
-   get<T>(url: string): Observable<T> {
+  // Generic GET method
+  get<T>(url: string,model?:any): Observable<T> {
     this.spinner.show();
-    return this.http.get<T>(`${api}/${url}`).pipe(
+    return this.http.get<T>(`${api}/${url}`, { params: model }).pipe(
       tap(() => this.spinner.hide()),
       catchError(this.handleError.bind(this))
     );

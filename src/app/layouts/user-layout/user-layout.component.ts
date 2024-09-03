@@ -7,6 +7,7 @@ import { Paginate } from '../../models/paginateModel';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SwalService } from '../../services/swal.service';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-layout',
@@ -38,7 +39,7 @@ export class UserLayoutComponent implements OnInit {
   ) { }
 
   filteredTasks: TaskModel[] = [];
-  selectedFilter = '0';
+  selectedFilter: string = null;
   selectedSort = '0';
 
   ngOnInit(): void {
@@ -49,24 +50,24 @@ export class UserLayoutComponent implements OnInit {
       userId: [null],
 
     });
-    this.applyFilter();
+    // this.applyFilter();
   }
 
-  applyFilter() {
-    if (!this.tasks || !this.tasks.items) {
-      return;
-    }
+  // applyFilter() {
+  //   if (!this.tasks || !this.tasks.items) {
+  //     return;
+  //   }
 
-    this.filteredTasks = this.tasks.items.filter(task => {
-      if (this.selectedFilter === '0') return true; // Tümü
-      if (this.selectedFilter === '1') return task.status === 1; // Yeni
-      if (this.selectedFilter === '2') return task.status === 2; // Yapılıyor
-      if (this.selectedFilter === '3') return task.status === 3; // Tamamlanmış
-      return true;
-    });
+  //   this.filteredTasks = this.tasks.items.filter(task => {
+  //     if (this.selectedFilter === '0') return true; // Tümü
+  //     if (this.selectedFilter === '1') return task.status === 1; // Yeni
+  //     if (this.selectedFilter === '2') return task.status === 2; // Yapılıyor
+  //     if (this.selectedFilter === '3') return task.status === 3; // Tamamlanmış
+  //     return true;
+  //   });
 
-    this.cdRef.detectChanges(); // Değişiklikleri tetikle
-  }
+  //   this.cdRef.detectChanges(); // Değişiklikleri tetikle
+  // }
 
 
 
@@ -117,15 +118,31 @@ export class UserLayoutComponent implements OnInit {
     }, "Evet")
     };
 
+    onFilterChange() {
+      this.pageIndex = 1; // Filtre değiştiğinde pageIndex 1'e ayarlanıyor
+      this.getTasks();    // Yeni filtreye göre görevleri getir
+    }
 
   getTasks(){
     const userId = this.AuthService.getUserId();
+
+    let params = new HttpParams()
+    .set('UserId', userId.toString())
+    .set('PageIndex', this.pageIndex.toString())
+    .set('PageSize', this.pageSize.toString());
+
+  // Eğer filter null değilse TStatus parametresine ekle
+  if (this.selectedFilter !== null) {
+    params = params.set('TStatus', this.selectedFilter.toString());
+  }
+
     this.http
-    .get<Paginate<TaskModel>>(`Task/GetPaginatedTaskByUserId?UserId=${userId}&PageIndex=${this.pageIndex}&pageSize=${this.pageSize}`)
+    .get<Paginate<TaskModel>>(`Task/GetPaginatedTaskByUserId`, params)
       .subscribe(response => {
         this.tasks = response;
         this.totalPages = response.pagination.totalPages;
-        this.applyFilter();
+        // this.applyFilter();
+        this.pageIndex = response.pagination.pageIndex;
       },
       error => {
         console.error('Hata:', error);
@@ -134,6 +151,7 @@ export class UserLayoutComponent implements OnInit {
     );
   }
 
+// ?UserId=${userId}&PageIndex=${this.pageIndex}&pageSize=${this.pageSize}&TStatus=${filter}`
 
 //Pagination
 pageSize: number = 10;

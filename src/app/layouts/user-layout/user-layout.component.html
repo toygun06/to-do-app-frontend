@@ -29,11 +29,11 @@
 
             <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
               <p class="small mb-0 me-2 text-muted">Filter</p>
-              <select data-mdb-select-init [(ngModel)]="selectedFilter" (change)="applyFilter()">
-                <option value="0">Hepsi</option>
-                <option value="1">Yeni</option>
-                <option value="2">Yapılıyor</option>
-                <option value="3">Tamamlandı</option>
+              <select data-mdb-select-init [(ngModel)]="selectedFilter" (change)="onFilterChange()">
+                <option [ngValue]="null">Hepsi</option>
+                <option [value]="1">Yeni</option>
+                <option [value]="2">Yapılıyor</option>
+                <option [value]="3">Tamamlandı</option>
               </select>
               <p class="small mb-0 ms-4 me-2 text-muted">Sort</p>
               <select data-mdb-select-init>
@@ -45,8 +45,8 @@
             </div>
 
             <!-- Görev Listesi -->
-            <ul *ngIf="filteredTasks.length > 0">
-              <li *ngFor="let task of filteredTasks"
+            <ul *ngIf="tasks.items.length > 0">
+              <li *ngFor="let task of tasks.items"
                 class="list-group-item d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
                   <select [(ngModel)]="task.status" (change)="putUpdateTaskStatus(task.id, task.status )" [ngClass]="{
