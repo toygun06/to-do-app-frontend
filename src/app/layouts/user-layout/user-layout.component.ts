@@ -131,7 +131,6 @@ export class UserLayoutComponent implements OnInit {
     .set('PageIndex', this.pageIndex.toString())
     .set('PageSize', this.pageSize.toString());
 
-  // Eğer filter null değilse TStatus parametresine ekle
   if (this.selectedFilter !== null) {
     params = params.set('TStatus', this.selectedFilter.toString());
   }
@@ -150,8 +149,6 @@ export class UserLayoutComponent implements OnInit {
       }
     );
   }
-
-// ?UserId=${userId}&PageIndex=${this.pageIndex}&pageSize=${this.pageSize}&TStatus=${filter}`
 
 //Pagination
 pageSize: number = 10;
