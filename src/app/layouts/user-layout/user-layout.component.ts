@@ -8,6 +8,7 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SwalService } from '../../services/swal.service';
 import { HttpParams } from '@angular/common/http';
+import { title } from 'node:process';
 
 @Component({
   selector: 'app-user-layout',
@@ -23,10 +24,12 @@ import { HttpParams } from '@angular/common/http';
 })
 export class UserLayoutComponent implements OnInit {
   taskForm: FormGroup;
+  updateTaskForm: FormGroup;
   isCompleted = false;
   selectBackgroundColor = 'white';
   getUserId: any;
   tasks:Paginate<TaskModel>;
+  selectedTaskId: number | null = null;
 
 
   constructor(
@@ -49,6 +52,11 @@ export class UserLayoutComponent implements OnInit {
       description: ['', Validators.required],
       userId: [null],
 
+    });
+    this.updateTaskForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      userId: [null],
     });
     // this.applyFilter();
   }
@@ -99,13 +107,32 @@ export class UserLayoutComponent implements OnInit {
       this.getTasks();
   }
 
-  updateTask(task: TaskModel) {
-
-    this.http.put(`Task/Update`, task)
-    .subscribe(response => {
-      const index = this.tasks.items.findIndex(t => t.id === task.id);
-      this.tasks.items[index] = task;
+  openUpdateModal(task: TaskModel): void {
+    this.selectedTaskId = task.id;
+    this.updateTaskForm.patchValue({
+      title: task.title,
+      description: task.description
     });
+  }
+
+  updateTask(): void {
+    if (this.updateTaskForm.valid && this.selectedTaskId) {
+      const updateData= {
+        id: this.selectedTaskId,
+        ...this.updateTaskForm.value
+      };
+      this.http.put(`Task/Update`, updateData)
+        .subscribe(
+          response => {
+            this.swal.callToast("Görev başarıyla güncellendi", "success");
+            this.getTasks();
+          },
+          error => {
+            console.error('Güncelleme hatası:', error);
+            this.swal.callToast("Görev güncellenirken hata oluştu", "error");
+          }
+        );
+    }
   }
 
   deleteTask(taskId: number) {

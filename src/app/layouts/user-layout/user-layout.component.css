@@ -51,5 +51,8 @@ select.option-completed {
   color: white;
 }
 
-
+.button-class { /* Düzenleme butonunuzun sınıf adı */
+  outline: none; /* Outline'ı kaldırır */
+  box-shadow: none; /* Ekstra gölge varsa kaldırır */
+}
 
