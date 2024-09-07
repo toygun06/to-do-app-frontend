@@ -28,20 +28,20 @@
             <hr class="my-4">
 
             <div class="d-flex justify-content-end align-items-center mb-4 pt-2 pb-3">
-              <p class="small mb-0 me-2 text-muted">Filter</p>
+              <p class="small mb-0 me-2 text-muted">Filtre</p>
               <select data-mdb-select-init [(ngModel)]="selectedFilter" (change)="onFilterChange()">
                 <option [ngValue]="null">Hepsi</option>
                 <option [value]="1">Yeni</option>
                 <option [value]="2">Yapılıyor</option>
                 <option [value]="3">Tamamlandı</option>
               </select>
-              <p class="small mb-0 ms-4 me-2 text-muted">Sort</p>
+              <!-- <p class="small mb-0 ms-4 me-2 text-muted">Sort</p>
               <select data-mdb-select-init>
                 <option value="1">Added date</option>
                 <option value="2">Due date</option>
               </select>
               <a href="#!" style="color: #23af89;" data-mdb-tooltip-init title="Ascending"><i
-                  class="fas fa-sort-amount-down-alt ms-2"></i></a>
+                  class="fas fa-sort-amount-down-alt ms-2"></i></a> -->
             </div>
 
             <!-- Görev Listesi -->
@@ -58,8 +58,15 @@
                     <option [ngValue]="2" class="option-in-progress">Yapılıyor</option>
                     <option [ngValue]="3" class="option-completed">Tamamlandı</option>
                   </select>
-                  <div style="min-width: 270px">
-                    <span [ngClass]="{'text-strikethrough': task.status === 3}" class="ms-2" title="{{task.title}}">
+                  <div style="min-width: 270px" >
+                    <span
+                    [ngClass]="{'text-strikethrough': task.status === 3}"
+                    class="ms-2"
+                    style="cursor: pointer;"
+                    title="{{task.title}}"
+                    (click)="openUpdateModal(task)"
+                    data-bs-toggle="modal"
+                    data-bs-target="#updateModalLabel">
                       {{task.title.length >25 ? (task.title | slice: 0:25) + '...' : task.title}}
                     </span>
                   </div>
@@ -71,15 +78,16 @@
 
 
                 <div class="d-flex">
-                  <button
+                  <a
                   class="text-info me-2"
+                  style="cursor: pointer;"
                   (click)="openUpdateModal(task)"
                   data-bs-toggle="modal"
                   data-bs-target="#updateModalLabel"
                   title="Görevi Düzenle">
                   <i class="fas fa-pencil-alt"></i>
-                  </button>
-                  <a class="text-danger" (click)="deleteTask(task.id)" title="Görevi Sil"><i
+                  </a>
+                  <a class="text-danger" style="cursor: pointer;" (click)="deleteTask(task.id)" title="Görevi Sil"><i
                       class="fas fa-trash-alt"></i></a>
                 </div>
               </li>
